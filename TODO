@@ -1,0 +1,112 @@
+The Whiteboard Game!!!
+
+FRIDAY OBJECTIVE: Move 2 Stabber units
+1. Make the Pen
+    - Can draw any path up to certain range
+    - Fancy hand animation
+    - Cannot go through walls
+    - Right-Click to cancel
+    - Draw arrow at end of path
+    - Path cannot go through obstacles
+2. Make a Dummy Unit
+    - Make dummy selectable
+    - Path starts at dummy center
+    - Dummy will move after path made and [E] key pressed
+3. Make the global movement script
+    - Give each troop a number when drafting according to their order
+    - Submit button that moves troops in order
+    - Make troops move with their line
+    - reset drafts after each round
+
+SATURDAY OBJECTIVE: Get Stabber PvP vs AI
+1. Switch to real view
+    - Shouldn't require much programatically
+    - Disable all whiteboard sprites
+    - Enable the real view sprites
+    - Cross fade?
+    [SeanDoThis] Make assets for:
+    - black background (road? gravel?)
+    - walls / obstacles (car? brick wall? )
+    - unit sprites (player's units: white, enemy units: blue)
+        - Dummy: A fat guy (solid white/blue with humanoid outline)
+        - Stabber: Has big [knife|sword] in front of him
+        - Sniper: Skinny dude with l o n g sniper pointed up at his side
+        - Hunter: Masked guy with handgun
+    - [ProbablySunday] Animations for idle, ready (stab/snipe), and dead
+    - [ExtraCredit] Switch back to whiteboard view, reveal dead guys as crossed out in red, then erase them
+2. Add an AI
+    - Make it able to take a turn
+    - AI turn simultaneuous with Player turn
+    - [ExtraCredit] Reveal AI moves similar to player's moves
+    - Pathfind all AI units
+        - Look into NavMesh
+        - Pick random point them head there
+        - Place Points of Interest that they pathfind to
+        - Only pathfind to reachable point
+    - Strategy?
+3. Add tutorial Levels
+    - LVL 0: Move with dummy
+    - LVL 1: Kill dummy with stabber
+    - LVL 2: Kill Stabber with dummy + Stabber (sacrifices must be made)
+    - LVL 3: Kill Sniper with 2 Stabbers (flank em John)
+    - LVL 4: War 1  1Snipe 2Stab 2Dum each
+4. Add title Screen / Lose screen / Win screen
+
+
+
+
+
+Objective: Kill all enemies (without getting killed yourself)
+
+CLASSES:
+1. The Stabber
+    - Can kill only within melee distance
+    - Kills all intercepted targets during turn
+    - If no intercepts during turn, is on alert and can kill 1 target after turn
+2. The Sniper
+    - Targets 1 point in sight after moving
+    - Everything from their position to that point is in-sight
+    - If enemy moves in-sight (or is already in-sight), sniper shoots
+    - Can only shoot once per round
+3. The Hunter
+    - Targets any enemy [in sight | on the field] at start of round
+    - At beginning of turn, if enemy is in LOS, shoot them and halt
+    - Otherwise, move to their position at the start of the round, scan area, then shoot if still there
+    - Cannot kill anyone besides target
+    - [Optional] Can kill target if in LOS anytime while moving
+4. The Dummy
+    - Cannot kill anyone
+    - Will most definitely haul ass
+    - Use him as cannon-fodder!
+Thats enough classes for now
+
+
+Who Kills Who?
+
+Stabber vs. Sniper:
+- If sniper runs into stabber, sniper dies
+- If stabber crosses sniper's sights (even if in melee range), stabber dies
+- If same turn, sniper dies
+Stabber vs. Hunter:
+- If stabber is hunter's target and in melee range, both die
+- If stabber is not hunter's target, hunter dies, stabber lives
+Stabber vs. Stabber:
+- Stabber whose turn it is (even if other is on alert)
+- If both stabbers' turns, both die
+Sniper vs. Sniper:
+- Whoever went first
+- If both have same turn, both die
+Hunter vs. Sniper:
+- If hunter goes last and shoots sniper while in sniper's sights, hunter dies, sniper lives
+- If both go simultaneously, sniper dies, hunter lives
+Hunter vs. Hunter:
+- Whoever's turn it is
+- If both's turn, both die
+- If not the target, will not die
+Anyone vs. Dummy:
+- Dummy dies
+
+If 2 units run into each other but don't kill each other, movement halts at that point
+Snipers will [not have a sight | look at the original point, but from that halted position]
+
+STABBER'S ALERT AND SNIPER'S SIGHTS RESET AT START OF EVERY ROUND
