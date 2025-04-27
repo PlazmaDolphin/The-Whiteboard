@@ -10,17 +10,19 @@ public class draftLine : MonoBehaviour
     public float maxRange = 5f;
     public float lineWidth = 0.05f;
     public GameObject handFollow;
+    public SpriteRenderer playerHand, enemyHand;
     public GameObject arrowImage;
     public GameObject wallFinder;
     public float drawTime = 1f;
     public bool drafted = false; //Can only draw a line once
+    public bool isPlayer = true; //True if the player is drawing, false if the enemy is drawing
 
     private LineRenderer lineRenderer;
     public List<Vector3> rawPoints = new List<Vector3>();
     private Camera cam;
     private bool isDrawing = false;
     private bool validLine = true;
-    private bool isAnimating = false;
+    public bool isAnimating = false;
     private Vector3 originPoint;
     private float drawProgress = 0f;
 
@@ -31,6 +33,16 @@ public class draftLine : MonoBehaviour
         lineRenderer.positionCount = 0;
         lineRenderer.startWidth = lineWidth;
         lineRenderer.endWidth = lineWidth;
+        Invoke("setHand", 0.1f);
+    }
+    private void setHand(){
+        if (isPlayer){
+            playerHand.enabled = true;
+            enemyHand.enabled = false;
+        } else {
+            playerHand.enabled = false;
+            enemyHand.enabled = true;
+        }
     }
     public void startDrawing(){
         if (drafted) return;
@@ -43,21 +55,57 @@ public class draftLine : MonoBehaviour
         SetLineColor(new Color(0f, 0f, 0f, 0.5f));
         arrowImage.SetActive(false);
     }
+    // Used by AI instead of drawing, instantly animate after setting points
+    public void setPoints(List<Vector3> points){
+        if (drafted) return;
+        validLine = true;
+        isDrawing = false;
+        rawPoints.Clear();
+        rawPoints.AddRange(points);
+        lineRenderer.positionCount = 0;
+        arrowImage.SetActive(false);
+        UpdateLine();
+        isAnimating = true;
+        handFollow.SetActive(true);
+    }
     public void resetPen(){
         drafted = false;
         validLine = true;
         isDrawing = false;
+        isAnimating = false;
+        drawProgress = 0f;
+        handFollow.SetActive(false);
         rawPoints.Clear();
         lineRenderer.positionCount = 0;
-        SetLineColor(new Color(0f, 0f, 0f, 0.5f));
+        //SetLineColor(new Color(0f, 0f, 0f, 0.5f));
         arrowImage.SetActive(false);
     }
     void Update()
     {
+        if (isAnimating && rawPoints.Count > 1)
+        {
+            drawProgress += Time.deltaTime / drawTime;
+            int visibleCount = Mathf.Clamp((int)(drawProgress * rawPoints.Count), 1, rawPoints.Count-1);
+            if (drawProgress >= 1f)
+            {
+                isAnimating = false;
+                handFollow.SetActive(false);
+                arrowImage.SetActive(true);
+                arrowImage.transform.position = rawPoints[rawPoints.Count - 1];
+                Vector3 finalDir = rawPoints[rawPoints.Count - 1] - rawPoints[rawPoints.Count - 2];
+                arrowImage.transform.rotation = Quaternion.LookRotation(Vector3.forward, finalDir);
+                return;
+            }
+            lineRenderer.positionCount = visibleCount;
+            lineRenderer.SetPositions(rawPoints.GetRange(0, visibleCount).ToArray());
+            if(isPlayer) SetLineColor(new Color(0f, 0f, 0f, 1f));
+            else SetLineColor(new Color(0f, 0f, 1f, 1f));
+            handFollow.transform.position = rawPoints[visibleCount];
+        }
         // END THE LINE
         if (Input.GetMouseButtonUp(0))
         {
-            if (!isDrawing) return;
+            if (!isDrawing || !isPlayer) return;
             isDrawing = false;
             drawProgress = 0f;
             if (!validLine){
@@ -74,7 +122,7 @@ public class draftLine : MonoBehaviour
         // CANCEL THE LINE
         if (Input.GetMouseButtonDown(1))
         {
-            if (drafted) return;
+            if (drafted || !isPlayer) return;
             resetPen();
         }
 
@@ -102,26 +150,6 @@ public class draftLine : MonoBehaviour
                     SetLineColor(Color.red);
                 }
             }
-        }
-
-        if (isAnimating && rawPoints.Count > 1)
-        {
-            drawProgress += Time.deltaTime / drawTime;
-            int visibleCount = Mathf.Clamp((int)(drawProgress * rawPoints.Count), 1, rawPoints.Count);
-            if (drawProgress >= 1f || visibleCount == rawPoints.Count)
-            {
-                isAnimating = false;
-                handFollow.SetActive(false);
-                arrowImage.SetActive(true);
-                arrowImage.transform.position = rawPoints[rawPoints.Count - 1];
-                Vector3 finalDir = rawPoints[rawPoints.Count - 1] - rawPoints[rawPoints.Count - 2];
-                arrowImage.transform.rotation = Quaternion.LookRotation(Vector3.forward, finalDir);
-                return;
-            }
-            lineRenderer.positionCount = visibleCount;
-            lineRenderer.SetPositions(rawPoints.GetRange(0, visibleCount).ToArray());
-            SetLineColor(new Color(0f, 0f, 0f, 1f));
-            handFollow.transform.position = rawPoints[visibleCount];
         }
     }
 
