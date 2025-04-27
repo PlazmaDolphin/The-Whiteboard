@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 4907407685731204977}
   - component: {fileID: 8581563663784798605}
   - component: {fileID: 5665101547857095416}
+  - component: {fileID: 5752664008492750747}
   m_Layer: 0
   m_Name: playerDummy
-  m_TagString: Untagged
+  m_TagString: unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,13 +141,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a1eb7886b0143940b8a4f22700a1050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deadSprite: {fileID: 7760884282033236883, guid: ac0f7f5169cc5eb4db73b7fe7a41f96e, type: 3}
   thePen: {fileID: 3808975396061121703}
   numText: {fileID: 1705750371829041143}
   targetAI: {fileID: 0}
   agent: {fileID: 5665101547857095416}
+  unitClass: 0
   draftNo: 0
   moving: 0
+  dead: 0
   isEnemy: 0
+  maxRange: 5
   moveProgress: 0
 --- !u!195 &5665101547857095416
 NavMeshAgent:
@@ -170,6 +175,33 @@ NavMeshAgent:
   m_BaseOffset: 0.97999996
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!50 &5752664008492750747
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469696755095265448}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &3397095863066044290
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,19 +3,24 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
+public enum UnitClassType {Dummy, Stabber, Sniper, Hunter}
 public class dummyUnit : MonoBehaviour
 {
+    public GameObject deadSprite;
     public draftLine thePen;
     public TextMeshPro numText;
-    public Transform targetAI;
+    public Vector3 targetAI;
     public NavMeshAgent agent;
     private NavMeshHit hit;
     private NavMeshPath path;
     private float maxSampleDistance = 1f;
-    
+
+    public UnitClassType unitClass = UnitClassType.Dummy;
     public int draftNo;
     public bool moving;
+    public bool dead = false;
     public bool isEnemy;
     public float maxRange = 5f;
 
@@ -26,6 +31,7 @@ public class dummyUnit : MonoBehaviour
     {
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        agent.enabled = false; //disable agent
         thePen.isPlayer = !isEnemy;
     }
     void addSelfHuman(){
@@ -37,11 +43,11 @@ public class dummyUnit : MonoBehaviour
         numText.text = draftNo.ToString();
     }
     bool calcAiPath(){
-        if (!NavMesh.SamplePosition(targetAI.position, out hit, maxSampleDistance, NavMesh.AllAreas)) return false;
-        targetAI.position = hit.position;
-        agent.SetDestination(targetAI.position);
+        if (!NavMesh.SamplePosition(targetAI, out hit, maxSampleDistance, NavMesh.AllAreas)) return false;
+        targetAI = hit.position;
+        agent.SetDestination(targetAI);
         path = new NavMeshPath();
-        if (!agent.CalculatePath(targetAI.position, path)){
+        if (!agent.CalculatePath(targetAI, path)){
             Debug.Log("calculatePath failed!");
             return false;
         }
@@ -52,7 +58,7 @@ public class dummyUnit : MonoBehaviour
         if (path.corners.Length < 2) return false;
         return true;
     }
-List<Vector3> smoothPath(){
+    List<Vector3> smoothPath(){
     int totalPoints = 50;
     float totalDistance = 0f;
     var corners = path.corners;
@@ -111,20 +117,33 @@ List<Vector3> smoothPath(){
 }
 
     public void genEnemyPenPath(){
+        //activate agent
+        agent.enabled = true;
         calcAiPath();
         thePen.setPoints(smoothPath());
         thePen.arrowImage.SetActive(false);
+        agent.enabled = false; //disable agent
     }
     public void moveIt(){
         moving = true;
         moveProgress = 0f;
         thePen.arrowImage.SetActive(false);
-        //follow the line of movement constructed by thePen, point to point
-        //move to the first point of the line, then move to the next point, and so on
-        //point: thePen.rawPoints
-
-        
     }
+    private void softDie(){
+        //spawn a dead sprite then disable self
+        GameObject imdead = Instantiate(deadSprite, transform.position, Quaternion.identity);
+        imdead.transform.localScale = transform.localScale;
+        SpriteRenderer sr = imdead.GetComponent<SpriteRenderer>();
+        if (sr != null){
+            sr.sprite = GetComponent<SpriteRenderer>().sprite;
+            sr.color = GetComponent<SpriteRenderer>().color;
+            sr.sortingLayerID = GetComponent<SpriteRenderer>().sortingLayerID;
+            sr.sortingOrder = GetComponent<SpriteRenderer>().sortingOrder;
+            //this.gameObject.SetActive(false); //disable self
+            moving = false;
+        }
+    }
+
     public void resetSelf(){
         thePen.resetPen();
         moving = false;
@@ -156,5 +175,21 @@ List<Vector3> smoothPath(){
     {
         if(thePen.drafted || isEnemy) return;
         thePen.startDrawing();
+    }
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        //if tag is unit
+        Debug.Log("Collided with unit: " + collision.gameObject.name);
+        if (collision.CompareTag("unit")){
+            dummyUnit otherUnit = collision.gameObject.GetComponent<dummyUnit>();
+            if (otherUnit != null && otherUnit.isEnemy != isEnemy){
+                //things are going to get bloody
+                if (otherUnit.unitClass == UnitClassType.Stabber && otherUnit.moving){
+                    //die
+                    Invoke("softDie", 0.1f);
+                    dead = true;
+                }
+            }
+        }
     }
 }

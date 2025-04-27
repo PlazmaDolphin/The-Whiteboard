@@ -466,8 +466,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Scene\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 300
-    y: 78.66667
+    x: 301
+    y: 24
     width: 1654
     height: 962
   m_SerializedDataModeController:
@@ -1134,7 +1134,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 78.66667
+    y: 24
     width: 299
     height: 962
   m_SerializedDataModeController:
@@ -1156,18 +1156,18 @@ MonoBehaviour:
       m_ExpandedIDs: 0e51feff1251fefff42bfffffe2bffff042cffff582cffff3033ffffe04bffffea4bfffff04bffff804dffff9c50ffffaad0ffffd6f4ffff0af6ffff0cfbffff4ccb00008cd2000090d20000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: GameObject
-        m_OriginalName: GameObject
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -145494
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 4
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
         m_ClientGUIView: {fileID: 9}
@@ -1200,7 +1200,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 1066.6667
+    y: 1012
     width: 1955
     height: 279.33337
   m_SerializedDataModeController:
@@ -1244,7 +1244,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 79}
     m_SelectedIDs: 8eb00000
     m_LastClickedID: 45198
-    m_ExpandedIDs: 000000008eb00000b4b9000000ca9a3bffffff7f
+    m_ExpandedIDs: 000000009cb200009eb20000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1273,7 +1273,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000008eb00000
+    m_ExpandedIDs: 000000009cb200009eb20000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1476,8 +1476,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Inspector\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1956
-    y: 78.66667
+    x: 1957
+    y: 24
     width: 603
     height: 1267.3334
   m_SerializedDataModeController:
@@ -1491,12 +1491,7 @@ MonoBehaviour:
     m_SaveData: []
     m_ContainerData: []
     m_OverlaysVisible: 1
-  m_ObjectsLockedBeforeSerialization:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  m_ObjectsLockedBeforeSerialization: []
   m_InstanceIDsLockedBeforeSerialization: a01dfdff
   m_PreviewResizer:
     m_CachedPref: 151
@@ -1507,5 +1502,5 @@ MonoBehaviour:
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
-    m_IsLocked: 1
+    m_IsLocked: 0
   m_PreviewWindow: {fileID: 0}

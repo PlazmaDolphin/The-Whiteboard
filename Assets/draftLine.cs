@@ -33,6 +33,7 @@ public class draftLine : MonoBehaviour
         lineRenderer.positionCount = 0;
         lineRenderer.startWidth = lineWidth;
         lineRenderer.endWidth = lineWidth;
+        wallFinder.SetActive(false);
         Invoke("setHand", 0.1f);
     }
     private void setHand(){
@@ -144,11 +145,13 @@ public class draftLine : MonoBehaviour
 
             if (rawPoints.Count > 1)
             {
+                wallFinder.SetActive(true);
                 wallFinder.transform.position = rawPoints[rawPoints.Count - 1];
                 if(IsTouchingWall(wallFinder.GetComponent<CircleCollider2D>()) && rawPoints.Count > 2){
                     validLine = false;
                     SetLineColor(Color.red);
                 }
+                wallFinder.SetActive(false);
             }
         }
     }
