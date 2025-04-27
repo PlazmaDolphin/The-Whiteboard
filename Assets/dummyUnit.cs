@@ -13,9 +13,11 @@ public class dummyUnit : MonoBehaviour
     private NavMeshHit hit;
     private NavMeshPath path;
     private float maxSampleDistance = 1f;
+    
     public int draftNo;
     public bool moving;
     public bool isEnemy;
+    public float maxRange = 5f;
 
     private float moveTime = 2f;
     public float moveProgress = 0f;
@@ -50,51 +52,64 @@ public class dummyUnit : MonoBehaviour
         if (path.corners.Length < 2) return false;
         return true;
     }
-    List<Vector3> smoothPath(){
-        // Make the total number of points constant (e.g., 50) for smoother animation
-        int totalPoints = 50;
-        float totalDistance = 0f;
-        // Calculate total distance of the path
-        for (int i = 0; i < path.corners.Length - 1; i++){
-            totalDistance += Vector3.Distance(path.corners[i], path.corners[i + 1]);
-        }
-        var corners = path.corners;
-        int cornerCount = corners.Length;
+List<Vector3> smoothPath(){
+    int totalPoints = 50;
+    float totalDistance = 0f;
+    var corners = path.corners;
+    int cornerCount = corners.Length;
 
-        // 1) build cumulative distance array
-        float[] cumDist = new float[cornerCount];
-        cumDist[0] = 0f;
-        for (int i = 1; i < cornerCount; i++)
-            cumDist[i] = cumDist[i-1] + Vector3.Distance(corners[i-1], corners[i]);
-
-        // 2) for each desired sample distance, find where it sits
-        List<Vector3> smoothPath = new List<Vector3>(totalPoints);
-        for (int p = 0; p < totalPoints; p++){
-            float targetDistance = totalDistance * p / (totalPoints - 1);  
-            // clamp to final corner
-            if (targetDistance <= 0f){
-                smoothPath.Add(corners[0]);
-                continue;
-            }
-            if (targetDistance >= totalDistance){
-                smoothPath.Add(corners[cornerCount-1]);
-                continue;
-            }
-
-            // 3) find segment index so that cumDist[i] <= targetDistance <= cumDist[i+1]
-            int i = 0;
-            while (!(cumDist[i] <= targetDistance && targetDistance <= cumDist[i+1]))
-                i++;
-
-            // 4) local t between corners[i] and corners[i+1]
-            float segmentStartDist = cumDist[i];
-            float segmentLength    = cumDist[i+1] - segmentStartDist;
-            float t = (targetDistance - segmentStartDist) / segmentLength;
-
-            smoothPath.Add(Vector3.Lerp(corners[i], corners[i+1], t));
-        }
-        return smoothPath;
+    // Calculate total path distance
+    for (int i = 0; i < cornerCount - 1; i++){
+        totalDistance += Vector3.Distance(corners[i], corners[i + 1]);
     }
+
+    // Cap total distance to maxRange
+    float cappedDistance = Mathf.Min(totalDistance, maxRange);
+
+    // Build cumulative distance array
+    float[] cumDist = new float[cornerCount];
+    cumDist[0] = 0f;
+    for (int i = 1; i < cornerCount; i++){
+        cumDist[i] = cumDist[i-1] + Vector3.Distance(corners[i-1], corners[i]);
+    }
+
+    List<Vector3> smoothPath = new List<Vector3>(totalPoints);
+
+    for (int p = 0; p < totalPoints; p++){
+        float targetDistance = cappedDistance * p / (totalPoints - 1);
+
+        if (targetDistance <= 0f){
+            smoothPath.Add(corners[0]);
+            continue;
+        }
+
+        // If targetDistance exceeds available path, clamp to last corner
+        if (targetDistance >= totalDistance){
+            smoothPath.Add(corners[cornerCount-1]);
+            continue;
+        }
+
+        // Find which segment we're in
+        int i = 0;
+        while (i < cornerCount - 1 && !(cumDist[i] <= targetDistance && targetDistance <= cumDist[i+1])){
+            i++;
+        }
+
+        if (i >= cornerCount - 1){
+            smoothPath.Add(corners[cornerCount-1]);
+            continue;
+        }
+
+        float segmentStartDist = cumDist[i];
+        float segmentLength = cumDist[i+1] - segmentStartDist;
+        float t = (targetDistance - segmentStartDist) / segmentLength;
+
+        smoothPath.Add(Vector3.Lerp(corners[i], corners[i+1], t));
+    }
+
+    return smoothPath;
+}
+
     public void genEnemyPenPath(){
         calcAiPath();
         thePen.setPoints(smoothPath());
