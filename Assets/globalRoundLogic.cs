@@ -38,6 +38,16 @@ public class globalRoundLogic : MonoBehaviour
             }
         }
     }
+    static void killTheDead(){
+        //destroy and remove all who are dead
+        for (int i = allUnits.Count - 1; i >= 0; i--){
+            if (allUnits[i].dead){
+                dummyUnit d = allUnits[i];
+                allUnits.RemoveAt(i);
+                Destroy(d.gameObject);
+            }
+        }
+    }
     IEnumerator playRound() {
         //show AI moves
         Debug.Log("Num units: " + allUnits.Count);
@@ -48,6 +58,7 @@ public class globalRoundLogic : MonoBehaviour
             moveTurn(turnNo); // Start all unit actions
             yield return StartCoroutine(waitForAllDone()); // Wait here until they’re done
             turnNo++;
+            killTheDead(); // Remove dead units from the list
         }
 
         Debug.Log("Round finished!");
@@ -57,6 +68,7 @@ public class globalRoundLogic : MonoBehaviour
             d.resetSelf();
         }
         resetRound();
+        enemyController.cleanupList();
     }
     static IEnumerator waitForAllDone(){
         yield return new WaitUntil(() => allUnitsDone());
