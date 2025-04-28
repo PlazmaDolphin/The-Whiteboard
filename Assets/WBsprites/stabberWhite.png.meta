@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      stabberWhite_0: -5483087277670878577
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

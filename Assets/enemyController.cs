@@ -6,6 +6,7 @@ public class enemyController : MonoBehaviour
 {
     private List<dummyUnit> allEnemies = new List<dummyUnit>();
     private List<Vector3> playerTargets = new List<Vector3>();
+    private List<Vector3> fleePoints = new List<Vector3>();
     void Start()
     {
         // Find all enemy units in the scene and add them to the list
@@ -17,6 +18,7 @@ public class enemyController : MonoBehaviour
                 allEnemies.Add(enemy);
             }
         }
+        findFleePoints(); //should only need to do this once
     }
     void findPlayerLocations(){
         // Find all player units in the scene and add their positions to the list
@@ -27,6 +29,16 @@ public class enemyController : MonoBehaviour
                 playerTargets.Add(player.transform.position);
             }
         }
+    }
+    void findFleePoints(){
+        // Find all CowardCoordinate scripts in the scene and add their positions to the list
+        fleePoints.Clear();
+        foreach (cowardCoordinate coward in FindObjectsByType<cowardCoordinate>(FindObjectsSortMode.None)){
+            fleePoints.Add(coward.transform.position);
+        }
+    }
+    void pickFleePoint(dummyUnit enemy){
+        //pick the best flee point. screw this just do it later :(
     }
     void setEnemyTargets(){
         // Set the target positions for each enemy unit (change this for more complex AI)

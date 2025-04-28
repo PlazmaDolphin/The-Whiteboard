@@ -178,8 +178,6 @@ public class dummyUnit : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
-        //if tag is unit
-        Debug.Log("Collided with unit: " + collision.gameObject.name);
         if (collision.CompareTag("unit")){
             dummyUnit otherUnit = collision.gameObject.GetComponent<dummyUnit>();
             if (otherUnit != null && otherUnit.isEnemy != isEnemy){

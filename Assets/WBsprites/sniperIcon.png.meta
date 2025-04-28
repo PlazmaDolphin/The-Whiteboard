@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      sniperIcon_0: 5810906570045198708
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
